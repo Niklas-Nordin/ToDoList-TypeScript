@@ -5,6 +5,7 @@ var modal = document.getElementById("modal");
 var modalContent = document.querySelector(".modal-content");
 var editP = document.getElementById("edit-p");
 var saveBtn = document.getElementById("save-btn");
+var clearAll = document.getElementById("clear-all");
 var listItems = [];
 var currentId = 1;
 loadTodo();
@@ -59,7 +60,6 @@ myTodos.addEventListener("click", function (event) {
         var filteredTodo = listItems.filter(function (todo) { return todo.id === id; });
         if (filteredTodo.length > 0) {
             var todo = filteredTodo[0];
-            liItem.style.backgroundColor = "blue";
             modal.style.display = "block";
             editP.textContent = todo.task;
             editP.contentEditable = "true";
@@ -67,6 +67,7 @@ myTodos.addEventListener("click", function (event) {
     }
 });
 saveBtn.addEventListener("click", saveChanges);
+clearAll.addEventListener("click", clearAllTodos);
 modalContent.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
@@ -137,4 +138,13 @@ function loadTodo() {
 }
 function saveTodo() {
     localStorage.setItem("user", JSON.stringify(listItems));
+}
+function clearAllTodos() {
+    localStorage.removeItem("user");
+    var liItem = document.querySelectorAll(".li-item");
+    liItem.forEach(function (element) {
+        element.remove();
+    });
+    listItems = [];
+    currentId = 1;
 }

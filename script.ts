@@ -5,6 +5,7 @@ const modal = document.getElementById("modal") as HTMLDivElement;
 const modalContent = document.querySelector(".modal-content") as HTMLDivElement;
 const editP = document.getElementById("edit-p") as HTMLParagraphElement;
 const saveBtn = document.getElementById("save-btn") as HTMLButtonElement;
+const clearAll = document.getElementById("clear-all") as HTMLButtonElement;
 
 let listItems: TodoItem[] = [];
 let currentId = 1;
@@ -89,6 +90,7 @@ myTodos.addEventListener("click", (event) => {
   }
 });
 saveBtn.addEventListener("click", saveChanges);
+clearAll.addEventListener("click", clearAllTodos);
 
 modalContent.addEventListener("keydown", function (event: KeyboardEvent) {
   if (event.key === "Enter") {
@@ -173,4 +175,14 @@ function loadTodo() {
 
 function saveTodo() {
   localStorage.setItem("user", JSON.stringify(listItems));
+}
+
+function clearAllTodos() {
+  localStorage.removeItem("user");
+  const liItem = document.querySelectorAll(".li-item");
+  liItem.forEach((element) => {
+    element.remove();
+  });
+  listItems = [];
+  currentId = 1;
 }
