@@ -1,8 +1,13 @@
 const addTodo = document.getElementById("add-todo") as HTMLInputElement;
 const addBtn = document.getElementById("addBtn") as HTMLButtonElement;
 const myTodos = document.getElementById("my-todos") as HTMLUListElement;
+const modal = document.getElementById("modal") as HTMLDivElement;
+const modalContent = document.querySelector(".modal-content") as HTMLDivElement;
+const editP = document.getElementById("edit-p") as HTMLParagraphElement;
+const saveBtn = document.getElementById("save-btn") as HTMLButtonElement;
 
 let listItems: TodoItem[] = [];
+let currentId = 1;
 loadTodo();
 
 interface TodoItem {
@@ -22,30 +27,34 @@ function addTask(todoItem: TodoItem | null) {
       return;
     }
 
+    const capitalizedWord =
+      addTodo.value.charAt(0).toUpperCase() + addTodo.value.slice(1);
+
     addedTodo = {
-      id: listItems.length + 1,
-      task: addTodo.value,
+      id: currentId,
+      task: capitalizedWord,
       done: false,
     };
 
     listItems.push(addedTodo);
+    currentId++;
   }
 
   const li = document.createElement("li");
   li.classList.add("li-item");
   li.id = `${addedTodo.id}`;
   li.innerHTML = `
-            <input class="checkbox" type="checkbox">
+            <input class="checkbox" id="checkbox${addedTodo.id}" type="checkbox">
             <label class="todo">${addedTodo.task}</label>
             <input type="image" src="./assets/images/edit.svg" class="btn edit-btn">
             <input type="image" src="./assets/images/delete.svg" class="btn delete-btn">`;
+
   myTodos.append(li);
-  saveTodo();
   addTodo.value = "";
   console.log(listItems);
   console.log(addedTodo);
 
-  localStorage.setItem("user", JSON.stringify(listItems));
+  saveTodo();
 }
 
 addBtn.addEventListener("click", () => addTask(null));
@@ -56,55 +65,112 @@ addTodo.addEventListener("keydown", function (event) {
   }
 });
 
+let currentIdToEdit: number | null = null;
+
 myTodos.addEventListener("click", (event) => {
   const target = event.target as HTMLElement;
   const liItem = target.closest(".li-item") as HTMLLIElement;
   const id = parseInt(liItem.id);
-  const selected = listItems.filter((todo) => todo.id !== id);
-  listItems = selected;
 
   if (target.classList.contains("delete-btn")) {
+    listItems = listItems.filter((todo) => todo.id !== id);
     liItem.remove();
     console.log("listItems2", listItems);
+    saveTodo();
   } else if (target.classList.contains("edit-btn")) {
-    liItem.style.backgroundColor = "blue";
+    currentIdToEdit = id;
+    const filteredTodo = listItems.filter((todo) => todo.id === id);
+    if (filteredTodo.length > 0) {
+      const todo = filteredTodo[0];
+      modal.style.display = "block";
+      editP.textContent = todo.task;
+      editP.contentEditable = "true";
+    }
   }
 });
+saveBtn.addEventListener("click", saveChanges);
+
+modalContent.addEventListener("keydown", function (event: KeyboardEvent) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    saveChanges();
+  }
+});
+
+window.addEventListener("click", function (event) {
+  if (event.target === modal) {
+    saveChanges();
+  }
+});
+
+function saveChanges() {
+  if (currentIdToEdit === null) return;
+
+  const filterTodo = listItems.filter((todo) => todo.id === currentIdToEdit);
+
+  if (filterTodo.length > 0) {
+    const todo = filterTodo[0];
+    const liItem = document.getElementById(`${todo.id}`) as HTMLLIElement;
+    const label = liItem.querySelector(".todo") as HTMLLabelElement;
+
+    todo.task = editP.textContent?.trim() || todo.task;
+    label.textContent = todo.task;
+  }
+
+  editP.contentEditable = "false";
+  modal.style.display = "none";
+  currentIdToEdit = null;
+  saveTodo();
+  console.log(listItems);
+}
 
 //Checkbox, kontroller om done är true eller false
 
 myTodos.addEventListener("change", (event) => {
   const target = event.target as HTMLInputElement;
   const liItem = target.closest(".li-item") as HTMLLIElement;
-  let id = parseInt(liItem.id);
-  const todo = listItems.filter((todo) => todo.id === id);
+  const id = parseInt(liItem.id);
 
-  if (!todo) {
-    console.log("Couldn't find the id...");
-    return;
+  for (let i = 0; i < listItems.length; i++) {
+    if (listItems[i].id === id) {
+      listItems[i].done = target.checked;
+      if (listItems[i].done) {
+        liItem.style.opacity = "0.5";
+      } else {
+        liItem.style.opacity = "1";
+      }
+    }
   }
-
-  const matchedTodo = todo[0];
-
-  if (target.checked) {
-    matchedTodo.done = true;
-    liItem.style.opacity = "0.5";
-  } else {
-    liItem.style.opacity = "1";
-    matchedTodo.done = false;
-  }
+  console.log(listItems);
+  saveTodo();
 });
 
 function loadTodo() {
-  let getStoredData: null | string = localStorage.getItem("user");
+  const getStoredData: null | string = localStorage.getItem("user");
 
   if (getStoredData) {
     listItems = JSON.parse(getStoredData);
     listItems.forEach((todo) => {
       addTask(todo);
+
+      const liChecked = document.getElementById(`${todo.id}`) as HTMLLIElement;
+      const checkbox = document.getElementById(
+        `checkbox${todo.id}`
+      ) as HTMLInputElement;
+
+      if (todo.done === true) {
+        checkbox.checked = true;
+        liChecked.style.opacity = "0.5";
+      }
+
+      currentId = Math.max(todo.id) + 1;
     });
     console.log(listItems);
   } else {
     console.log("no data");
   }
+}
+
+function saveTodo() {
+  localStorage.setItem("user", JSON.stringify(listItems));
 }
