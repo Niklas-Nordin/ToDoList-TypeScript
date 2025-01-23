@@ -47,11 +47,14 @@ function addTask(todoItem: TodoItem | null) {
   li.innerHTML = `
             <input class="checkbox" id="checkbox${addedTodo.id}" type="checkbox">
             <label class="todo">${addedTodo.task}</label>
-            <input type="image" src="./assets/images/edit.svg" class="btn edit-btn">
-            <input type="image" src="./assets/images/delete.svg" class="btn delete-btn">`;
+            <div class="edit-delete">
+              <input type="image" src="./assets/images/edit.svg" class="edit-btn">
+              <input type="image" src="./assets/images/delete.svg" class="delete-btn">
+            </div>`;
 
   myTodos.append(li);
   addTodo.value = "";
+  clearAll.style.display = "block";
   console.log(listItems);
   console.log(addedTodo);
 
@@ -137,7 +140,7 @@ myTodos.addEventListener("change", (event) => {
     if (listItems[i].id === id) {
       listItems[i].done = target.checked;
       if (listItems[i].done) {
-        liItem.style.opacity = "0.5";
+        liItem.style.opacity = "0.3";
       } else {
         liItem.style.opacity = "1";
       }
@@ -162,7 +165,7 @@ function loadTodo() {
 
       if (todo.done === true) {
         checkbox.checked = true;
-        liChecked.style.opacity = "0.5";
+        liChecked.style.opacity = "0.3";
       }
 
       currentId = Math.max(todo.id) + 1;
@@ -183,6 +186,7 @@ function clearAllTodos() {
   liItem.forEach((element) => {
     element.remove();
   });
+  clearAll.style.display = "none";
   listItems = [];
   currentId = 1;
 }

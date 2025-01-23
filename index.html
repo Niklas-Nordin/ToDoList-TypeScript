@@ -4,17 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDo List</title>
+    <!-- H1 -->
     <link rel="stylesheet" href="./style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=League+Script&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Todo task text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Farsan&display=swap"
+      rel="stylesheet"
+    />
     <script src="./script.js" defer></script>
   </head>
   <body>
-    <div>
-      <label for="add-todo">Add a todo to your list</label>
-      <input type="text" id="add-todo" placeholder="Add a todo item..." />
-      <button id="addBtn" class="btn">Add</button>
+    <header>
+      <h1>Get it done</h1>
+    </header>
+
+    <div class="lets-add">
+      <input type="text" id="add-todo" placeholder="Add your todo..." />
+      <button id="addBtn">Add</button>
     </div>
 
-    <ul id="my-todos"></ul>
+    <main class="main">
+      <ul id="my-todos"></ul>
+
+      <button id="clear-all" class="btn">Clear All</button>
+    </main>
 
     <div id="modal">
       <div class="modal-content">
@@ -23,6 +44,11 @@
       </div>
     </div>
 
-    <button id="clear-all" class="btn">Clear All</button>
+    <footer>
+      <hr />
+      <p class="footer-text">
+        Copyright © 2025, Niklas todo-list in typescript
+      </p>
+    </footer>
   </body>
 </html>
