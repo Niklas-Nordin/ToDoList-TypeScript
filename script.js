@@ -30,7 +30,7 @@ function addTask(todoItem) {
         currentId++;
     }
     const li = document.createElement("li");
-    li.classList.add("li-item");
+    li.classList.add("li-item", "fade-in");
     li.id = `${addedTodo.id}`;
     li.innerHTML = `
             <input class="checkbox" id="checkbox${addedTodo.id}" type="checkbox">
@@ -46,7 +46,9 @@ function addTask(todoItem) {
     console.log(addedTodo);
     saveTodo();
 }
-addBtn.addEventListener("click", () => addTask(null));
+addBtn.addEventListener("click", () => {
+    addTask(null);
+});
 addTodo.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         addTask(null);
@@ -136,6 +138,8 @@ function loadTodo() {
                 checkbox.checked = true;
                 liChecked.style.opacity = "0.3";
             }
+            const li = document.getElementById(`${todo.id}`);
+            li === null || li === void 0 ? void 0 : li.classList.remove("fade-in");
             currentId = Math.max(todo.id) + 1;
         });
         console.log(listItems);

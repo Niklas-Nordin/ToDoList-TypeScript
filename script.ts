@@ -42,7 +42,7 @@ function addTask(todoItem: TodoItem | null) {
   }
 
   const li = document.createElement("li");
-  li.classList.add("li-item");
+  li.classList.add("li-item", "fade-in");
   li.id = `${addedTodo.id}`;
   li.innerHTML = `
             <input class="checkbox" id="checkbox${addedTodo.id}" type="checkbox">
@@ -53,6 +53,7 @@ function addTask(todoItem: TodoItem | null) {
             </div>`;
 
   myTodos.append(li);
+
   addTodo.value = "";
   clearAll.style.display = "block";
   console.log(listItems);
@@ -61,7 +62,9 @@ function addTask(todoItem: TodoItem | null) {
   saveTodo();
 }
 
-addBtn.addEventListener("click", () => addTask(null));
+addBtn.addEventListener("click", () => {
+  addTask(null);
+});
 
 addTodo.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
@@ -167,6 +170,9 @@ function loadTodo() {
         checkbox.checked = true;
         liChecked.style.opacity = "0.3";
       }
+
+      const li = document.getElementById(`${todo.id}`);
+      li?.classList.remove("fade-in");
 
       currentId = Math.max(todo.id) + 1;
     });
