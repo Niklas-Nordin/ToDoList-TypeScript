@@ -41,7 +41,7 @@ function addTask(todoItem: TodoItem | null) {
     currentId++;
   }
 
-  const li = document.createElement("li");
+  const li = document.createElement("li") as HTMLLIElement;
   li.classList.add("li-item", "fade-in");
   li.id = `${addedTodo.id}`;
   li.innerHTML = `
