@@ -82,7 +82,10 @@ myTodos.addEventListener("click", (event) => {
   if (target.classList.contains("delete-btn")) {
     listItems = listItems.filter((todo) => todo.id !== id);
     liItem.remove();
-    console.log("listItems2", listItems);
+    if (listItems.length === 0) {
+      clearAll.style.display = "none";
+    }
+    console.log(listItems);
     saveTodo();
   } else if (target.classList.contains("edit-btn")) {
     currentIdToEdit = id;
